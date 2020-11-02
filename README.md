@@ -56,7 +56,7 @@ You can use almost every Mii format with this script:
 
 It's possible to import or export a Mii from Mii Studio. To do that, please follow these steps.
 
-1. Add the Mii Studio Import/Export tool to your bookmarks: with the link `javascript:(function () {var s = document.createElement('script');s.setAttribute('src', 'https://riiconnect24.github.io/Mii-Tools/miistudio.js');document.body.appendChild(s);}());`
+1. Add the Mii Studio Import/Export tool to your bookmarks: with the link `javascript:(function () {var s = document.createElement('script');s.setAttribute('src', 'https://riiconnect24.github.io/mii2studio/miistudio.js');document.body.appendChild(s);}());`
 1. Go to the [Mii Studio](https://accounts.nintendo.com/mii_studio) website.
 
 ### Importing
