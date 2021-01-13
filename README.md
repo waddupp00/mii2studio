@@ -12,17 +12,17 @@ Example of a rendered Mii:
 
 ## How to Use
 
-[Download the bundled application from here](https://github.com/RiiConnect24/mii2studio/releases/). It's a Python script embedded in a binary, for your convenience. The source files are available too if you need to use that instead for some reason.
+[Download the bundled application from here](https://github.com/HEYimHeroic/mii2studio/releases/). It's a Python script embedded in a binary, for your convenience. The source files are available too if you need to use that instead for some reason.
 
-Command Syntax: `mii2studio <input mii file / qr code / cmoc entry number> <output studio mii file> <input type (wii/3ds/wiiu/miitomo/switch/switchgame/studio)>`
+Command Syntax: `mii2studio <input mii file / qr code / cmoc entry number> <output studio mii file> <input type (wii/3ds/wiiu/miitomo/switchdb/switch/studio)>`
 
 The script can also be ran without parameters.
 
 ## Examples
 
-* Using a Mii binary file from a Wii: `python mii2studio.py /path/to/BobRoss.mii /path/to/BobRoss.studio wii`
-* Using a 3DS QR Code: `python mii2studio.py "https://www.miicharacters.com/miis/qr_large/20150_bobross.jpg" /path/to/Bob.studio 3ds`
-* Using a Check Mii Out Channel entry number: `python mii2studio.py 3136-3713-5980 /path/to/BobRoss.studio wii`
+* Using a Mii binary file from a Wii: `python mii2studio.py /path/to/MichaelTutori.rcd /path/to/MichaelTutori.mnms wii`
+* Using a 3DS QR Code: `python mii2studio.py "https://cdn.discordapp.com/attachments/687051755174887425/729799032561729597/sensei01_Michael_Tutori.JPG" /path/to/MichaelTutori.mnms 3ds`
+* Using a Check Mii Out Channel entry number: `python mii2studio.py 4661-9722-1903 /path/to/MichaelTutori.mnms wii`
 
 The script will output the file ready to be used in Mii Studio, along with image URLs of the Mii's face and body rendered as PNGs, and some useful information about the Mii.
 
@@ -34,10 +34,11 @@ You can use almost every Mii format with this script:
     * Wii
     * 3DS
     * Wii U
-    * Switch
+    * SwitchDB
         * Mii format used in the Mii DB on the Switch NAND
+    * Switch
         * Mii format used in save files in Switch games
-    * Mii Studio (in decoded form)
+    * Mii Studio
 * Mii QR Codes from many platforms
     * 3DS
     * Wii U
@@ -48,7 +49,7 @@ You can use almost every Mii format with this script:
 
 ## List of Mii Generations
 
-* Generation 1: Wii and DS
+* Generation 1: Wii
 * Generation 2: 3DS, Wii U, and [Miitomo](https://kaeru.world/projects/kaerutomo)
 * Generation 3: Switch and Mii Studio
 
