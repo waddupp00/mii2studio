@@ -5,13 +5,11 @@ from os import remove
 from requests import get, post
 from struct import pack
 
-print("mii2studio by Larsenv\n")
-
 if len(sys.argv) < 4:
-    print("CLI Usage: python mii2studio.py <input mii file / qr code / cmoc entry number> <output studio mii file> <input type (wii/3ds/wiiu/miitomo/switch/switchgame/studio)>\n")
+    print("CLI Usage: python mii2studio.py <input mii file / qr code / cmoc entry number> <output studio mii file> <input type (wii/3ds/wiiu/miitomo/switchdb/switch/studio)>\n")
     input_file = input("Enter the path to the input file (binary file or QR Code), a CMOC entry number, or a URL to a QR Code: ")
     output_file = input("Enter the path to the output file (which will be importable with Mii Studio): ")
-    input_type = input("Enter the input type (wii/3ds/wiiu/miitomo/switch/switchgame/studio): ")
+    input_type = input("Enter the input type (wii/3ds/wiiu/miitomo/switchdb/switch/studio): ")
     print("")
 else:
     input_file = sys.argv[1]
@@ -33,12 +31,12 @@ if input_type == "wii":
             query = get("https://miicontestp.wii.rc24.xyz/cgi-bin/search.cgi?entryno=" + str(num)).content
 
             if len(query) != 32: # 32 = empty response
-                with open("temp.mii", "wb") as f:
+                with open("qr.cfsd", "wb") as f:
                     f.write(query[56:130]) # cut the Mii out of the file
             else:
                 print("Mii not found.")
             
-            input_file = "temp.mii"
+            input_file = "qr.cfsd"
         else:
             input_file = input_file
     except ValueError:
@@ -46,9 +44,9 @@ if input_type == "wii":
     
     orig_mii = Gen1Wii.from_file(input_file)
 
-    if input_file == "temp.mii":
+    if input_file == "qr.cfsd":
         try:
-            remove("temp.mii")
+            remove("qr.cfsd")
         except PermissionError:
             print("Unable to remove temporary file.")
 elif input_type == "3ds" or input_type == "wiiu" or input_type == "miitomo":
@@ -74,26 +72,26 @@ elif input_type == "3ds" or input_type == "wiiu" or input_type == "miitomo":
 
         key = bytes([0x59, 0xFC, 0x81, 0x7E, 0x64, 0x46, 0xEA, 0x61, 0x90, 0x34, 0x7B, 0x20, 0xE9, 0xBD, 0xCE, 0x52])
 
-        with open("temp.mii", "wb") as f:
+        with open("qr.cfsd", "wb") as f:
             nonce = decoded_qr[:8]
             cipher = AES.new(key, AES.MODE_CCM, nonce + bytes([0, 0, 0, 0]))
             content = cipher.decrypt(decoded_qr[8:96])
             result = content[:12] + nonce + content[12:]
             f.write(result)
 
-        input_file = "temp.mii"
+        input_file = "qr.cfsd"
 
     orig_mii = Gen2Wiiu3dsMiitomo.from_file(input_file)
 
-    if input_file == "temp.mii":
+    if input_file == "qr.cfsd":
         try:
-            remove("temp.mii")
+            remove("qr.cfsd")
         except PermissionError:
             print("Unable to remove temporary file.")
-elif input_type == "switch":
+elif input_type == "switchdb":
     from gen3_switch import Gen3Switch
     orig_mii = Gen3Switch.from_file(input_file)
-elif input_type == "switchgame":
+elif input_type == "switch":
     from gen3_switchgame import Gen3Switchgame
     orig_mii = Gen3Switchgame.from_file(sys.argv[1])
 else:
@@ -119,10 +117,10 @@ if input_type != "studio":
         0: "Red",
         1: "Orange",
         2: "Yellow",
-        3: "Light Green",
-        4: "Green",
-        5: "Blue",
-        6: "Light Blue",
+        3: "Lime Green",
+        4: "Forest Green",
+        5: "Royal Blue",
+        6: "Sky Blue",
         7: "Pink",
         8: "Purple",
         9: "Brown",
@@ -132,8 +130,8 @@ if input_type != "studio":
 
     print("Favorite Color: " + favorite_colors[orig_mii.favorite_color])
     
-    print("Body Height: " + str(orig_mii.body_height) + "%")
-    print("Body Weight: " + str(orig_mii.body_weight) + "%")
+    print("Height: " + str(orig_mii.body_height) + " out of 127")
+    print("Build: " + str(orig_mii.body_weight) + " out of 127")
 
     mii_types = {
         0x00: "Special Mii - Gold Pants",
@@ -164,9 +162,6 @@ if input_type != "studio":
     
     if "switch" not in input_type and input_type != "wii":
         print("Copying: Yes" if orig_mii.copying == 1 else "Copying: No")
-
-    if input_type == "wii":
-        print("Downloaded from CMOC: Yes" if orig_mii.downloaded == 1 else "Downloaded from CMOC: No")
 
     print("")
 
@@ -230,7 +225,7 @@ if input_type != "studio":
     studio_mii["eyebrow_size"] = orig_mii.eyebrow_size
     studio_mii["eyebrow_type"] = orig_mii.eyebrow_type
     studio_mii["eyebrow_horizontal"] = orig_mii.eyebrow_horizontal
-    if input_type != "switch":
+    if input_type != "switchdb":
         studio_mii["eyebrow_vertical"] = orig_mii.eyebrow_vertical
     else:
         studio_mii["eyebrow_vertical"] = orig_mii.eyebrow_vertical + 3
@@ -328,6 +323,7 @@ with open(output_file, "wb") as f:
     print("Body: " + url + "&type=all_body&width=512&instanceCount=1")
     print("Face (16x): " + url + "&type=face&width=512&instanceCount=16")
     print("Body (16x): " + url + "&type=all_body&width=512&instanceCount=16\n")
+    print("Mii Studio code: " + mii_data)
 
     print("Mii Studio file written to " + output_file + ".\n")
 
