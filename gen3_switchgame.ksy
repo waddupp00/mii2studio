@@ -14,7 +14,7 @@ seq:
     doc: Mii name. Can be up to 10 characters long. Different from the Mii name that appears in Super Smash Bros. Ultimate - in that game, this is never seen.
   - id: font_region
     type: u1
-    doc: Font region. Currently, it's unknown which regions are supported.
+    doc: Font region. 0 = USA + PAL + JPN, 1 = CHN, 2 = KOR, 3 = TWN.
   - id: favorite_color
     type: u1
     doc: Favorite color. Ranges from 0 to 11.
@@ -29,12 +29,10 @@ seq:
     doc: Body weight. Ranges from 0 to 127, small to large.
   - id: special_type
     type: u1
-    doc: Toggleable "special" type function (possibly a "key code" according to "SetSpecialMiiKeyCode". There is no function to set this value, but there does exist function to check if it is set, with "IsEnabledSpecialMii". Remains unset in every Mii I've looked at.
-  - id: unknown_buffer2
+    doc: Toggle if the Mii is a Special Mii. Completely unused functionality. Does not allow editing the Mii, or using the Mii in games.
+  - id: region_move
     type: u1
-    repeat: expr
-    repeat-expr: 1
-    doc: Currently unknown data - likely a 00 buffer between the Mii body data and the Mii face data.
+    doc: Currently unknown.
   - id: face_type
     type: u1
     doc: Face shape. Ranges from 0 to 11. Not ordered the same as visible in editor.
