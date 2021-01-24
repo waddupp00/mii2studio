@@ -1,5 +1,6 @@
 import subprocess
 import sys
+import codecs
 from binascii import hexlify
 from os import remove
 from requests import get, post
@@ -142,18 +143,6 @@ if input_type != "studio":
         0xE0: "Normal Mii - Black Pants",
         0x100: "???"
     }
-    
-    if "switch" not in input_type:
-        mii_type = ""
-        i = ""
-
-        for k,v in mii_types.items():
-            if k >= orig_mii.avatar_id[0]:
-                mii_type = i
-                break
-            i = v
-
-        print("Mii Type: " + mii_type)
         
     print("Gender: Male" if orig_mii.gender == 0 else "Gender: Female")
     
@@ -295,6 +284,7 @@ if input_type != "studio":
     studio_mii["nose_vertical"] = orig_mii.nose_vertical
 
 with open(output_file, "wb") as f:
+    mii_data_bytes = ""
     mii_data = b""
     n = r = 256
     mii_dict = []
@@ -307,15 +297,21 @@ with open(output_file, "wb") as f:
             mii_dict.append(int(hexlify(read)[i:i+2], 16))
     else:
         mii_dict = studio_mii.values()
+#    mii_data_bytes += hexlify(u8(0))
     mii_data += hexlify(u8(0))
     for v in mii_dict:
         eo = (7 + (v ^ n)) % 256 # encode the Mii, Nintendo seemed to have randomized the encoding using Math.random() in JS, but we removed randomizing
         n = eo
+#        mii_data_bytes += hexlify(u8(mii_dict))
         mii_data += hexlify(u8(eo))
         f.write(u8(v))
+        mii_data_bytes += str(hexlify(u8(v)), "ascii")
 
     f.close()
-
+    
+    #codecs.decode(mii_data_bytes, "hex")
+    #mii_data_bytes = mii_data_bytes.decode("utf-8")
+    
     url = "https://studio.mii.nintendo.com/miis/image.png?data=" + mii_data.decode("utf-8")
 
     print("Mii Render URLs:\n")
@@ -323,7 +319,9 @@ with open(output_file, "wb") as f:
     print("Body: " + url + "&type=all_body&width=512&instanceCount=1")
     print("Face (16x): " + url + "&type=face&width=512&instanceCount=16")
     print("Body (16x): " + url + "&type=all_body&width=512&instanceCount=16\n")
-    print("Mii Studio code: " + mii_data)
+    print("Mii Studio code: " + mii_data_bytes)
+    
+    #print(f"URL: {url}")
 
     print("Mii Studio file written to " + output_file + ".\n")
 
