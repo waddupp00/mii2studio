@@ -346,7 +346,7 @@ class Gen2Wiiu3dsMiitomo(KaitaiStruct):
         if hasattr(self, '_m_mole_enable'):
             return self._m_mole_enable if hasattr(self, '_m_mole_enable') else None
 
-        self._m_mole_enable = (self.mole >> 15)
+        self._m_mole_enable = ((self.mole >> 0) & 1)
         return self._m_mole_enable if hasattr(self, '_m_mole_enable') else None
 
     @property
