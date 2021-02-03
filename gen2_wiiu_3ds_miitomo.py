@@ -362,7 +362,7 @@ class Gen2Wiiu3dsMiitomo(KaitaiStruct):
         if hasattr(self, '_m_glasses_vertical'):
             return self._m_glasses_vertical if hasattr(self, '_m_glasses_vertical') else None
 
-        self._m_glasses_vertical = ((self.glasses >> 11) & 15)
+        self._m_glasses_vertical = ((self.glasses >> 11) & 16)
         return self._m_glasses_vertical if hasattr(self, '_m_glasses_vertical') else None
 
     @property
