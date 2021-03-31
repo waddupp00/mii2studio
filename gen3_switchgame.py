@@ -6,9 +6,7 @@ from kaitaistruct import KaitaiStruct, KaitaiStream, BytesIO
 
 
 if parse_version(kaitaistruct.__version__) < parse_version('0.9'):
-    raise Exception("Incompatible Kaitai Struct Python API: 0.9 or later is required, but you have %s" % (
-        kaitaistruct.__version__))
-
+    raise Exception("Incompatible Kaitai Struct Python API: 0.9 or later is required, but you have %s" % (kaitaistruct.__version__))
 
 class Gen3Switchgame(KaitaiStruct):
     def __init__(self, _io, _parent=None, _root=None):
@@ -18,23 +16,18 @@ class Gen3Switchgame(KaitaiStruct):
         self._read()
 
     def _read(self):
-        self.unknown_data = [None] * (16)
+        self.mii_id = [None] * (16)
         for i in range(16):
-            self.unknown_data[i] = self._io.read_u1()
+            self.mii_id[i] = self._io.read_u1()
 
-        self.mii_name = (self._io.read_bytes(20)).decode(u"utf-16le")
-        self.unknown_buffer = [None] * (3)
-        for i in range(3):
-            self.unknown_buffer[i] = self._io.read_u1()
-
+        self.mii_name = (self._io.read_bytes(22)).decode(u"utf-16le")
+        self.font_region = self._io.read_u1()
         self.favorite_color = self._io.read_u1()
         self.gender = self._io.read_u1()
         self.body_height = self._io.read_u1()
         self.body_weight = self._io.read_u1()
-        self.unknown_buffer2 = [None] * (2)
-        for i in range(2):
-            self.unknown_buffer2[i] = self._io.read_u1()
-
+        self.special_type = self._io.read_u1()
+        self.region_move = self._io.read_u1()
         self.face_type = self._io.read_u1()
         self.face_color = self._io.read_u1()
         self.face_wrinkles = self._io.read_u1()
@@ -77,6 +70,6 @@ class Gen3Switchgame(KaitaiStruct):
         self.mole_size = self._io.read_u1()
         self.mole_horizontal = self._io.read_u1()
         self.mole_vertical = self._io.read_u1()
-        self.unknown_buffer3 = [None] * (1)
-        for i in range(1):
-            self.unknown_buffer3[i] = self._io.read_u1()
+        self.always_zero = self._io.read_u1()
+
+
