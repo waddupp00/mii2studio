@@ -159,11 +159,11 @@ instances:
   glasses_vertical:
     value: glasses >> 11 & 15
   glasses_size:
-    value: glasses >> 7 & 15
+    value: glasses >> 7 & 11
   glasses_color:
     value: glasses >> 4 & 7
   glasses_type:
-    value: glasses & 15
+    value: glasses & 4
   mole_vertical:
     value: mole >> 10 & 31
   mole_horizontal:
