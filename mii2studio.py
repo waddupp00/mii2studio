@@ -10,7 +10,7 @@ if len(sys.argv) < 4:
     print("CLI Usage: python mii2studio.py <input mii file / qr code / cmoc entry number> <output studio mii file> <input type (wii/3ds/wiiu/miitomo/switchdb/switch/studio)>\n")
     input_file = input("Enter the path to the input file (binary file or QR Code), a CMOC entry number, or a URL to a QR Code: ")
     output_file = input("Enter the path to the output file (which will be importable with Mii Studio): ")
-    input_type = input("Enter the input type (wii/3ds/wiiu/miitomo/switchdb/switch/studio/switchnfcd): ")
+    input_type = input("Enter the input type (wii/3ds/wiiu/miitomo/switchdb/switch/studio): ")
     print("")
 else:
     input_file = sys.argv[1]
@@ -18,7 +18,7 @@ else:
     input_type = sys.argv[3]
 
 if input_type == "wii":
-    from gen1_wii import MiidataWii
+    from gen1_wii import Gen1Wii
     try:
         if len(input_file.replace("-", "")) <= 12 and "." not in input_file:
             print("Detected that the input is a Check Mii Out Channel entry number.\n")
@@ -43,7 +43,7 @@ if input_type == "wii":
     except ValueError:
         input_file = input_file
     
-    orig_mii = MiidataWii.from_file(input_file)
+    orig_mii = Gen1Wii.from_file(input_file)
 
     if input_file == "qr.cfsd":
         try:
@@ -51,7 +51,7 @@ if input_type == "wii":
         except PermissionError:
             print("Unable to remove temporary file.")
 elif input_type == "3ds" or input_type == "wiiu" or input_type == "miitomo":
-    from gen2_wiiu_3ds_miitomo import Miidata3ds
+    from gen2_wiiu_3ds_miitomo import Gen2Wiiu3dsMiitomo
     from Crypto.Cipher import AES
     if ".png" in input_file.lower() or ".jpg" in input_file.lower() or ".jpeg" in input_file.lower(): # crappy way to detect if input is an mage
         if "http" in input_file.lower():
@@ -82,7 +82,7 @@ elif input_type == "3ds" or input_type == "wiiu" or input_type == "miitomo":
 
         input_file = "qr.cfsd"
 
-    orig_mii = Miidata3ds.from_file(input_file)
+    orig_mii = Gen2Wiiu3dsMiitomo.from_file(input_file)
 
     if input_file == "qr.cfsd":
         try:
@@ -92,9 +92,6 @@ elif input_type == "3ds" or input_type == "wiiu" or input_type == "miitomo":
 elif input_type == "switchdb":
     from gen3_switch import Gen3Switch
     orig_mii = Gen3Switch.from_file(input_file)
-elif input_type == "switchnfcd":
-    from gen3_switch_nfcd import Gen3SwitchNFCD
-    orig_mii = Gen3SwitchNFCD.from_file(input_file)
 elif input_type == "switch":
     from gen3_switchgame import Gen3Switchgame
     orig_mii = Gen3Switchgame.from_file(sys.argv[1])
@@ -221,8 +218,6 @@ if input_type != "studio":
     studio_mii["eyebrow_type"] = orig_mii.eyebrow_type
     studio_mii["eyebrow_horizontal"] = orig_mii.eyebrow_horizontal
     if input_type != "switchdb":
-        studio_mii["eyebrow_vertical"] = orig_mii.eyebrow_vertical
-    if input_type != "switchnfcd":
         studio_mii["eyebrow_vertical"] = orig_mii.eyebrow_vertical
     else:
         studio_mii["eyebrow_vertical"] = orig_mii.eyebrow_vertical + 3

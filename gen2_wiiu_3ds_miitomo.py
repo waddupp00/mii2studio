@@ -66,8 +66,8 @@ class Gen2Wiiu3dsMiitomo(KaitaiStruct):
         self.glasses = self._io.read_u2le()
         self.mole = self._io.read_u2le()
         self.creator_name = (self._io.read_bytes(20)).decode(u"utf-16le")
-        self.padding2 = self._io.read_u2le()
-        self.checksum = self._io.read_u2le()
+        #self.padding2 = self._io.read_u2le()
+        #self.checksum = self._io.read_u2le()
 
     @property
     def glasses_color(self):
