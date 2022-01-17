@@ -30,7 +30,7 @@ You can use almost every Mii format with this script:
 
 * Mii binary files from many platforms
     * Wii
-	* DS
+    * DS
     * Wii U/3DS (after countless revisions from myself...)
     * SwitchDB
         * Mii format used in the Mii DB on the Switch NAND
