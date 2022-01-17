@@ -7,10 +7,10 @@ from requests import get, post
 from struct import pack
 
 if len(sys.argv) < 4:
-    print("CLI Usage: python mii2studio.py <input mii file / qr code / cmoc entry number> <output studio mii file> <input type (wii/3ds/wiiu/miitomo/switchdb/switch/studio)>\n")
+    print("CLI Usage: python mii2studio.py <input mii file / qr code / cmoc entry number> <output studio mii file> <input type (wii/ds/3ds/wiiu/miitomo/switchdb/switch/studio)>\n")
     input_file = input("Enter the path to the input file (binary file or QR Code), a CMOC entry number, or a URL to a QR Code: ")
     output_file = input("Enter the path to the output file (which will be importable with Mii Studio): ")
-    input_type = input("Enter the input type (wii/3ds/wiiu/miitomo/switchdb/switch/studio/switchnfcd): ")
+    input_type = input("Enter the input type (wii/ds/3ds/wiiu/miitomo/switchdb/switch/studio): ")
     print("")
 else:
     input_file = sys.argv[1]
@@ -18,7 +18,7 @@ else:
     input_type = sys.argv[3]
 
 if input_type == "wii":
-    from gen1_wii import MiidataWii
+    from gen1_wii import CoreDataWii
     try:
         if len(input_file.replace("-", "")) <= 12 and "." not in input_file:
             print("Detected that the input is a Check Mii Out Channel entry number.\n")
@@ -43,15 +43,18 @@ if input_type == "wii":
     except ValueError:
         input_file = input_file
     
-    orig_mii = MiidataWii.from_file(input_file)
+    orig_mii = CoreDataWii.from_file(input_file)
 
     if input_file == "qr.cfsd":
         try:
             remove("qr.cfsd")
         except PermissionError:
             print("Unable to remove temporary file.")
+elif input_type == "ds":
+    from gen1_ds import CoreDataDs
+    orig_mii = CoreDataDs.from_file(input_file)
 elif input_type == "3ds" or input_type == "wiiu" or input_type == "miitomo":
-    from gen2_wiiu_3ds_miitomo import Miidata3ds
+    from gen2_wiiu_3ds_miitomo import CoreData3ds
     from Crypto.Cipher import AES
     if ".png" in input_file.lower() or ".jpg" in input_file.lower() or ".jpeg" in input_file.lower(): # crappy way to detect if input is an mage
         if "http" in input_file.lower():
@@ -82,7 +85,7 @@ elif input_type == "3ds" or input_type == "wiiu" or input_type == "miitomo":
 
         input_file = "qr.cfsd"
 
-    orig_mii = Miidata3ds.from_file(input_file)
+    orig_mii = CoreData3ds.from_file(input_file)
 
     if input_file == "qr.cfsd":
         try:
@@ -90,17 +93,14 @@ elif input_type == "3ds" or input_type == "wiiu" or input_type == "miitomo":
         except PermissionError:
             print("Unable to remove temporary file.")
 elif input_type == "switchdb":
-    from gen3_switch import Gen3Switch
-    orig_mii = Gen3Switch.from_file(input_file)
-elif input_type == "switchnfcd":
-    from gen3_switch_nfcd import Gen3SwitchNFCD
-    orig_mii = Gen3SwitchNFCD.from_file(input_file)
+    from gen3_switch import CoreDataSwitch
+    orig_mii = CoreDataSwitch.from_file(input_file)
 elif input_type == "switch":
-    from gen3_switchgame import Gen3Switchgame
-    orig_mii = Gen3Switchgame.from_file(sys.argv[1])
+    from gen3_switchgame import CharInfoSwitch
+    orig_mii = CharInfoSwitch.from_file(sys.argv[1])
 elif input_type == "miistudio":
-    from gen3_studio import Gen3Studio
-    orig_mii = Gen3Studio.from_file(sys.argv[1])
+    from gen3_studio import MiidataStudio
+    orig_mii = MiidataStudio.from_file(sys.argv[1])
 else:
     print("Error: Invalid input type.")
     exit()
@@ -153,9 +153,9 @@ if input_type != "studio":
     print("Gender: Male" if orig_mii.gender == 0 else "Gender: Female")
     
     if "switch" not in input_type:
-        print("Mingle: Yes" if orig_mii.mingle == 1 else "Mingle: No")
+        print("Mingle: Yes" if orig_mii.mingle == 0 else "Mingle: No")
     
-    if "switch" not in input_type and input_type != "wii":
+    if "switch" not in input_type and input_type != "wii" and input_type != "ds":
         print("Copying: Yes" if orig_mii.copying == 1 else "Copying: No")
 
     print("")
@@ -192,7 +192,7 @@ if input_type != "studio":
         studio_mii["facial_hair_color"] = orig_mii.facial_hair_color
     studio_mii["beard_goatee"] = orig_mii.facial_hair_beard
     studio_mii["body_weight"] = orig_mii.body_weight
-    if input_type == "wii":
+    if input_type == "wii" or input_type == "ds":
         studio_mii["eye_stretch"] = 3
     else:
         studio_mii["eye_stretch"] = orig_mii.eye_stretch
@@ -205,7 +205,7 @@ if input_type != "studio":
     studio_mii["eye_type"] = orig_mii.eye_type
     studio_mii["eye_horizontal"] = orig_mii.eye_horizontal
     studio_mii["eye_vertical"] = orig_mii.eye_vertical
-    if input_type == "wii":
+    if input_type == "wii" or input_type == "ds":
         studio_mii["eyebrow_stretch"] = 3
     else:
         studio_mii["eyebrow_stretch"] = orig_mii.eyebrow_stretch
@@ -222,12 +222,10 @@ if input_type != "studio":
     studio_mii["eyebrow_horizontal"] = orig_mii.eyebrow_horizontal
     if input_type != "switchdb":
         studio_mii["eyebrow_vertical"] = orig_mii.eyebrow_vertical
-    if input_type != "switchnfcd":
-        studio_mii["eyebrow_vertical"] = orig_mii.eyebrow_vertical
     else:
         studio_mii["eyebrow_vertical"] = orig_mii.eyebrow_vertical + 3
     studio_mii["face_color"] = orig_mii.face_color
-    if input_type == "wii":
+    if input_type == "wii" or input_type == "ds":
         if orig_mii.facial_feature in makeup:
             studio_mii["face_makeup"] = makeup[orig_mii.facial_feature]
         else:
@@ -235,7 +233,7 @@ if input_type != "studio":
     else:
         studio_mii["face_makeup"] = orig_mii.face_makeup
     studio_mii["face_type"] = orig_mii.face_type
-    if input_type == "wii":
+    if input_type == "wii" or input_type == "ds":
         if orig_mii.facial_feature in wrinkles:
             studio_mii["face_wrinkles"] = wrinkles[orig_mii.facial_feature]
         else:
@@ -270,7 +268,7 @@ if input_type != "studio":
     studio_mii["mole_enable"] = orig_mii.mole_enable
     studio_mii["mole_horizontal"] = orig_mii.mole_horizontal
     studio_mii["mole_vertical"] = orig_mii.mole_vertical
-    if input_type == "wii":
+    if input_type == "wii" or input_type == "ds":
         studio_mii["mouth_stretch"] = 3
     else:
         studio_mii["mouth_stretch"] = orig_mii.mouth_stretch
