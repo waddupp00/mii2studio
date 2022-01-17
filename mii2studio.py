@@ -18,7 +18,7 @@ else:
     input_type = sys.argv[3]
 
 if input_type == "wii":
-    from gen1_wii import MiidataWii
+    from gen1_wii import CoreDataWii
     try:
         if len(input_file.replace("-", "")) <= 12 and "." not in input_file:
             print("Detected that the input is a Check Mii Out Channel entry number.\n")
@@ -43,7 +43,7 @@ if input_type == "wii":
     except ValueError:
         input_file = input_file
     
-    orig_mii = MiidataWii.from_file(input_file)
+    orig_mii = CoreDataWii.from_file(input_file)
 
     if input_file == "qr.cfsd":
         try:
@@ -51,10 +51,10 @@ if input_type == "wii":
         except PermissionError:
             print("Unable to remove temporary file.")
 elif input_type == "ds":
-    from gen1_ds import MiidataDs
-    orig_mii = MiidataDs.from_file(input_file)
+    from gen1_ds import CoreDataDs
+    orig_mii = CoreDataDs.from_file(input_file)
 elif input_type == "3ds" or input_type == "wiiu" or input_type == "miitomo":
-    from gen2_wiiu_3ds_miitomo import Miidata3ds
+    from gen2_wiiu_3ds_miitomo import CoreData3ds
     from Crypto.Cipher import AES
     if ".png" in input_file.lower() or ".jpg" in input_file.lower() or ".jpeg" in input_file.lower(): # crappy way to detect if input is an mage
         if "http" in input_file.lower():
@@ -85,7 +85,7 @@ elif input_type == "3ds" or input_type == "wiiu" or input_type == "miitomo":
 
         input_file = "qr.cfsd"
 
-    orig_mii = Miidata3ds.from_file(input_file)
+    orig_mii = CoreData3ds.from_file(input_file)
 
     if input_file == "qr.cfsd":
         try:
@@ -93,11 +93,11 @@ elif input_type == "3ds" or input_type == "wiiu" or input_type == "miitomo":
         except PermissionError:
             print("Unable to remove temporary file.")
 elif input_type == "switchdb":
-    from gen3_switch import MiidataSwitch
-    orig_mii = MiidataSwitch.from_file(input_file)
+    from gen3_switch import CoreDataSwitch
+    orig_mii = CoreDataSwitch.from_file(input_file)
 elif input_type == "switch":
-    from gen3_switchgame import MiidataSwitchgame
-    orig_mii = MiidataSwitchgame.from_file(sys.argv[1])
+    from gen3_switchgame import CharInfoSwitch
+    orig_mii = CharInfoSwitch.from_file(sys.argv[1])
 elif input_type == "miistudio":
     from gen3_studio import MiidataStudio
     orig_mii = MiidataStudio.from_file(sys.argv[1])
