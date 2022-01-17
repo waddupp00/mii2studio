@@ -6,7 +6,7 @@ meta:
     - miigx
   endian: be
 seq:
-  - id: invalid
+  - id: unknown_1
     type: b1
   - id: gender
     type: b1
@@ -40,11 +40,11 @@ seq:
     type: b3
   - id: facial_feature
     type: b4
-  - id: unknown
+  - id: unknown_2
     type: b3
   - id: mingle
     type: b1
-  - id: unknown_2
+  - id: unknown_3
     type: b1
   - id: downloaded
     type: b1
@@ -54,15 +54,15 @@ seq:
     type: b3
   - id: hair_flip
     type: b1
-  - id: unknown_3
+  - id: unknown_4
     type: b5
   - id: eyebrow_type
     type: b5
-  - id: unknown_4
+  - id: unknown_5
     type: b1
   - id: eyebrow_rotation
     type: b4
-  - id: unknown_5
+  - id: unknown_6
     type: b6
   - id: eyebrow_color
     type: b3
@@ -74,7 +74,7 @@ seq:
     type: b4
   - id: eye_type
     type: b6
-  - id: unknown_6
+  - id: unknown_7
     type: b2
   - id: eye_rotation
     type: b3
@@ -82,13 +82,13 @@ seq:
     type: b5
   - id: eye_color
     type: b3
-  - id: unknown_7
+  - id: unknown_8
     type: b1
   - id: eye_size
     type: b3
   - id: eye_horizontal
     type: b4
-  - id: unknown_8
+  - id: unknown_9
     type: b5
   - id: nose_type
     type: b4
@@ -96,7 +96,7 @@ seq:
     type: b4
   - id: nose_vertical
     type: b5
-  - id: unknown_9
+  - id: unknown_10
     type: b3
   - id: mouth_type
     type: b5
@@ -110,7 +110,7 @@ seq:
     type: b4
   - id: glasses_color
     type: b3
-  - id: unknown_10
+  - id: unknown_11
     type: b1
   - id: glasses_size
     type: b3
@@ -134,7 +134,7 @@ seq:
     type: b5
   - id: mole_horizontal
     type: b5
-  - id: unknown_11
+  - id: unknown_12
     type: b1
   - id: creator_name
     type: str
