@@ -302,8 +302,8 @@ with open(output_file, "wb") as f:
             read = g.read()
             g.close()
         
-        for i in range(0, len(hexlify(read)), 2):
-            mii_dict.append(int(hexlify(read)[i:i+2], 16))
+        for i in range(0, len(read), 2): # 2 characters = 1 byte in hex
+            mii_dict.append(int(read[i:i+2], 16))
     else:
         mii_dict = studio_mii.values()
 #    mii_data_bytes += hexlify(u8(0))
