@@ -17,6 +17,9 @@ else:
     output_file = sys.argv[2]
     input_type = sys.argv[3]
 
+if input_type == "miistudio": # for legacy reasons
+    input_type = "studio"
+
 if input_type == "wii":
     from gen1_wii import CoreDataWii
     try:
@@ -98,7 +101,7 @@ elif input_type == "switchdb":
 elif input_type == "switch":
     from gen3_switchgame import CharInfoSwitch
     orig_mii = CharInfoSwitch.from_file(input_file)
-elif input_type == "miistudio":
+elif input_type == "studio":
     from gen3_studio import MiidataStudio
     orig_mii = MiidataStudio.from_file(input_file)
 else:
@@ -294,7 +297,7 @@ with open(output_file, "wb") as f:
     mii_data = b""
     n = r = 256
     mii_dict = []
-    if input_type == "miistudio":
+    if input_type == "studio":
         with open(input_file, "rb") as g:
             read = g.read()
             g.close()
